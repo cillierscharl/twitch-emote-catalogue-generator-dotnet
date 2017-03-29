@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TwitchEmoteDownloader
 {
-
-
     public class EmoticonResponseContract
     {
         public _Links _links { get; set; }
@@ -32,5 +26,4 @@ namespace TwitchEmoteDownloader
         public string url { get; set; }
         public int? emoticon_set { get; set; }
     }
-
 }
