@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TwitchEmoteDownloader.Entities;
@@ -43,7 +41,7 @@ namespace TwitchEmoteDownloader
                         {
                             // HTML Decode is not an option due the values being escaped in regex form, sanitize as neccesary
                             emote.regex = emote.regex.Replace(@"\&lt\;", "<");
-                            emote.regex = emote.regex.Replace(@"&\gt\;", ">");
+                            emote.regex = emote.regex.Replace(@"\&gt\;", ">");
                             // Generate 100 valid values of the Regex value and pick the shortest one
                             var settings = new Rex.RexSettings(emote.regex);
                             settings.encoding = Rex.CharacterEncoding.ASCII;
@@ -55,13 +53,26 @@ namespace TwitchEmoteDownloader
                             results.Add(new LocalEmote()
                             {
                                 Name = minimulViableRegexValue,
-                                ImageName = m.url.Substring(m.url.LastIndexOf("/") + 1)
+                                ImageName = string.Format("Global/{0}", m.url.Substring(m.url.LastIndexOf("/") + 1))
                             });
                         }
                     });
                 }
             });
-            return results;
+            var orderedResults = results.OrderBy(x =>
+            {
+                // Smiles
+                if (Regex.IsMatch(x.Name, "[:|;|>|<|>]"))
+                    return 0;
+
+                // Text emotes
+                if (Regex.IsMatch(x.Name, "[a-zA-Z]"))
+                    return 1;
+
+                //Everything else
+                return 2;
+            });
+            return orderedResults.ToList();
 
         }
 
@@ -94,7 +105,7 @@ namespace TwitchEmoteDownloader
                 results.Add(new LocalEmote()
                 {
                     Name = emote.regex,
-                    ImageName = emote.regex
+                    ImageName = string.Format("BTTV/{0}.{1}", name.ToString(), "png")
                 });
             });
             return results;
