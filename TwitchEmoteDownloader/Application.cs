@@ -47,12 +47,12 @@ namespace TwitchEmoteDownloader
                             settings.encoding = Rex.CharacterEncoding.ASCII;
                             settings.k = 100;
 
-                            var minimulViableRegexValue = Rex.RexEngine.GenerateMembers(settings).OrderBy(s => s.Length).First();
+                            var minimumViableRegex = Rex.RexEngine.GenerateMembers(settings).OrderBy(s => s.Length).First();
 
                             client.DownloadFile(m.url, Directory.GetCurrentDirectory() + "/Emoticons/Global/" + m.url.Substring(m.url.LastIndexOf("/") + 1));
                             results.Add(new LocalEmote()
                             {
-                                Name = minimulViableRegexValue,
+                                Name = minimumViableRegex,
                                 ImageName = string.Format("Global/{0}", m.url.Substring(m.url.LastIndexOf("/") + 1))
                             });
                         }
@@ -117,6 +117,5 @@ namespace TwitchEmoteDownloader
             var result = JsonConvert.SerializeObject(generationResult);
             File.WriteAllText("./GlobalEmoticons.json", result);
         }
-
     }
 }
